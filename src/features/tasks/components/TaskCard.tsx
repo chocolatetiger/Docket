@@ -1,5 +1,6 @@
 import type { Priority, Task } from '../../../types';
 import { capitalise, formatDate } from '../../../lib/utils';
+import { useDraggable } from '@dnd-kit/core';
 
 interface TaskCardProps {
   task: Task;
@@ -11,9 +12,15 @@ const priorityStyles: Record<Priority, string> = {
 };
 
 const TaskCard = ({ task }: TaskCardProps) => {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: task.id,
+  });
   return (
     <article
-      className="bg-gray-900 
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      className={`bg-gray-900 
           border border-gray-800 
           rounded-xl p-5 
           hover:bg-gray-800 
@@ -21,7 +28,8 @@ const TaskCard = ({ task }: TaskCardProps) => {
           hover:-translate-y-1 
           hover:shadow-xl
           transition-all duration-200
-          cursor-pointer"
+          ${isDragging ? 'opacity-50' : ''}
+          cursor-grab`}
     >
       <div className="text-white font-semibold text-lg">{task.title}</div>
       <div className="text-gray-400 mt-2 text-lg">{task.description}</div>
