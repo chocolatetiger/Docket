@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { formatDate } from '../lib/utils';
 import { useBoards } from '../features/boards/hooks/useBoards';
 import { useState } from 'react';
-import { CreateBoardModal } from '../features/tasks/components/createBoardModal';
+import { CreateBoardModal } from '../features/tasks/components/CreateBoardModal';
 
 const BoardListPage = () => {
   const { data, error, isPending } = useBoards();
