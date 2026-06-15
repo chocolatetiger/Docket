@@ -1,9 +1,16 @@
 import { ColumnList } from '../features/tasks/components/ColumnList';
+import { CardDetailModal } from '../features/tasks/components/CardDetailModal';
 import { useColumns } from '../features/boards/hooks/useColumns';
 import { useParams } from 'react-router-dom';
 import { useTasks } from '../features/boards/hooks/useTasks';
-import { DndContext } from '@dnd-kit/core';
 import type { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
+import {
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DndContext,
+} from '@dnd-kit/core';
 import { useDragStore } from '../features/tasks/store/dragStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
@@ -12,6 +19,19 @@ import type { Task } from '../types';
 const BoardPage = () => {
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 8,
+      },
+    })
+  );
   const activePriority = searchParams.get('priority');
   const queryClient = useQueryClient();
   const setDraggedTaskId = useDragStore((state) => state.setDraggedTaskId);
@@ -88,9 +108,22 @@ const BoardPage = () => {
           </button>
         </div>
       </header>
-      <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <ColumnList columns={columns} tasks={filteredTasks} />
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <ColumnList
+          columns={columns}
+          tasks={filteredTasks}
+          onTaskClick={(taskId) => {
+            const params = new URLSearchParams(searchParams);
+            params.set('cardId', taskId);
+            setSearchParams(params);
+          }}
+        />
       </DndContext>
+      <CardDetailModal tasks={tasks} />
     </main>
   );
 };

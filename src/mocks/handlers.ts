@@ -79,4 +79,33 @@ export const handlers = [
     );
     return HttpResponse.json(tasks);
   }),
+  http.post('/api/boards', async ({ request }) => {
+    const body = (await request.json()) as { title: string };
+    const newBoard: Board = {
+      id: String(boardsArray.length + 1),
+      title: body.title,
+      createdAt: new Date().toISOString(),
+    };
+    boardsArray.push(newBoard);
+    columnsArray.push(
+      { id: `col-${newBoard.id}-1`, boardId: newBoard.id, title: 'To Do' },
+      {
+        id: `col-${newBoard.id}-2`,
+        boardId: newBoard.id,
+        title: 'In Progress',
+      },
+      { id: `col-${newBoard.id}-3`, boardId: newBoard.id, title: 'Done' }
+    );
+    return HttpResponse.json(newBoard, { status: 201 });
+  }),
+
+  http.post('/api/tasks', async ({ request }) => {
+    const body = (await request.json()) as Omit<Task, 'id'>;
+    const newTask: Task = {
+      ...body,
+      id: `t-${tasksArray.length + 1}`,
+    };
+    tasksArray.push(newTask);
+    return HttpResponse.json(newTask, { status: 201 });
+  }),
 ];

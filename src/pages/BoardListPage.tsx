@@ -1,15 +1,29 @@
 import { Link } from 'react-router-dom';
 import { formatDate } from '../lib/utils';
 import { useBoards } from '../features/boards/hooks/useBoards';
+import { useState } from 'react';
+import { CreateBoardModal } from '../features/tasks/components/createBoardModal';
 
 const BoardListPage = () => {
   const { data, error, isPending } = useBoards();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const handleCreateModalClose = () => {
+    setIsCreateModalOpen(false);
+  };
 
   if (isPending) return <div>Loading...</div>;
   if (error) return <div>Something went wrong</div>;
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
-      <h1 className="text-3xl font-bold text-white mb-8">My Boards</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-white">My Boards</h1>
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="text-white bg-violet-600 px-4 py-2 font-medium rounded-lg  hover:bg-violet-700 text-sm transition-colors duration-200"
+        >
+          + New Board
+        </button>
+      </div>
       <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {data.map((board) => (
           <li key={board.id}>
@@ -36,6 +50,9 @@ const BoardListPage = () => {
           </li>
         ))}
       </ul>
+      {isCreateModalOpen && (
+        <CreateBoardModal onClose={handleCreateModalClose} />
+      )}
     </div>
   );
 };

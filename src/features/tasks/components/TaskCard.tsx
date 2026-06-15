@@ -1,25 +1,24 @@
-import type { Priority, Task } from '../../../types';
-import { capitalise, formatDate } from '../../../lib/utils';
+import type { Task } from '../../../types';
+import { capitalise, formatDate, priorityStyles } from '../../../lib/utils';
 import { useDraggable } from '@dnd-kit/core';
 
 interface TaskCardProps {
   task: Task;
+  onTaskClick: (taskId: string) => void;
 }
-const priorityStyles: Record<Priority, string> = {
-  high: 'bg-red-500/20 text-red-400 border border-red-500/30',
-  medium: 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30',
-  low: 'bg-green-500/20 text-green-400 border border-green-500/30',
-};
 
-const TaskCard = ({ task }: TaskCardProps) => {
+const TaskCard = ({ task, onTaskClick }: TaskCardProps) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: task.id,
   });
   return (
     <article
       ref={setNodeRef}
-      {...listeners}
       {...attributes}
+      {...listeners}
+      onClick={() => {
+        onTaskClick(task.id);
+      }}
       className={`bg-gray-900 
           border border-gray-800 
           rounded-xl p-5 

@@ -3,9 +3,10 @@ import { Column } from './Column';
 interface ColumnListProps {
   columns: ColumnType[];
   tasks: TaskType[];
+  onTaskClick: (taskId: string) => void;
 }
 
-const ColumnList = ({ columns, tasks }: ColumnListProps) => {
+const ColumnList = ({ columns, tasks, onTaskClick }: ColumnListProps) => {
   return (
     <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
       {columns.map((column) => (
@@ -13,6 +14,7 @@ const ColumnList = ({ columns, tasks }: ColumnListProps) => {
           <Column
             column={column}
             tasks={tasks.filter((task) => task.columnId === column.id)}
+            onTaskClick={onTaskClick}
           />
         </li>
       ))}
