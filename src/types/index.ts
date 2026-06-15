@@ -18,6 +18,6 @@ export interface Task {
   title: string;
   description: string;
   priority: Priority;
-  dueDate: string | null; //why null
+  dueDate: string | null;
   order: number;
 }
