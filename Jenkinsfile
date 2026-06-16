@@ -12,6 +12,12 @@ pipeline {
         sh 'npm run lint'
       }
     }
+    stage('Test') {
+      steps {
+        sh 'npm run test -- --run'
+      }
+    }
+    
     stage('Typecheck') {
       steps {
         sh 'npx tsc --noEmit'
@@ -22,5 +28,6 @@ pipeline {
         sh 'npm run build'
       }
     }
+    
   }
 }
